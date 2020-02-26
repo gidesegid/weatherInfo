@@ -1,0 +1,27 @@
+{
+  "name": "weatherinfo",
+  "version": "1.0.0",
+  "description": "this is sample",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gidesegid/weatherInfo.git"
+  },
+  "author": "Gide",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gidesegid/weatherInfo/issues"
+  },
+  "homepage": "https://github.com/gidesegid/weatherInfo#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.2"
+  }
+}

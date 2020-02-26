@@ -1,0 +1,152 @@
+<html>
+    <title>Weather info</title>
+    <link rel="stylesheet" href="/assets/css/homePage.css">
+    <head class="text-center">
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+            <meta name="mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+    <body>
+        <h1 class="text-center">Weather information</h1>
+        <div>
+            <div class="locationList col-lg-3">
+                <input type="text" id="locationInput" placeholder="Enter location here"><button onclick="addLocation()" id="addButtonId" class="btn-primary">Add</button><hr>
+                <ul id="collection">
+                </ul>
+            </div>
+            <div class="col-lg-3" id="updateLocationName">
+                <input type="text" id="locationUpdate" placeholder="Enter location update"><button onclick="updateLocation()">update</button>
+            </div>
+            <div id="locationWeatherInformation" class="locationWeatherInformation col-lg-4">
+                <div id="locationWeatherInformationList">
+                </div>
+            </div>
+        </div>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            var collection=document.getElementById('collection')
+            var updateLocationName=document.getElementById('updateLocationName')
+            updateLocationName.style.display='none'
+            function getCollectedData(){
+                collection.innerHTML=''
+                collection.style.display='none'
+                axios.get('/getCollections').then((response)=>{
+                 for(key in response.data){
+                    collection.innerHTML+=`
+                    <li>
+                        <div class="input-group">
+                            <p id="updatedValue" class="alert-info">`+response.data[key].city+`</p>
+                            <button onclick="letsUpdateThisLocation('`+response.data[key]._id+`','`+response.data[key].city+`')" class="btn-success">Update</button>
+                            <button onclick="deleteLocation('`+response.data[key]._id+`')" class="btn-danger">Delete</button>
+                            <button class="btn-primary" onclick="getWeatherInfo('`+response.data[key].city+`')">weather info</button><hr>
+                        </div>
+                    </li>
+                    `
+                 }
+                 collection.style.display='block'
+               })
+            }
+            function addLocation(){
+                let locationInfo={}
+                locationInfo.cityName=document.getElementById('locationInput').value;
+                axios.post('/addLocationToDb',{
+                    locationInfo
+                }).then((response)=>{
+                    if(response.data._id!==null || response.data._id!==undefined){
+                        getCollectedData()
+                        alert("Location name added successfylly to the database!")
+                        document.getElementById('locationInput').value=''
+                    }
+                })
+
+            } 
+            var selectedLocationId=[]
+            var selectedLocationCityName=[]
+            function updateLocation(){
+               if(selectedLocationId.length==0){
+                   alert("click update button  to update location name")
+               }else{
+                    let locationInfo={}
+                    locationInfo.id=selectedLocationId[0];
+                    locationInfo.city=document.getElementById('locationUpdate').value;
+                    axios.patch('/updateLocation',{
+                        locationInfo:locationInfo
+                    }).then((response)=>{
+                        document.getElementById('locationUpdate').value=''
+                        getCollectedData()
+                        alert("Updated successfully!")
+                    })
+               }
+           }
+            function letsUpdateThisLocation(id,city){
+                selectedLocationId=[]
+                selectedLocationId.push(id)
+                selectedLocationCityName=[];
+                selectedLocationCityName.push(city)
+                document.getElementById('locationUpdate').value=city
+                updateLocationName.style.display='block'
+            }
+            function deleteLocation(id){
+                let locationInfo={}
+                locationInfo.id=id
+                axios.post('/deleteLocation',{
+                    locationInfo:locationInfo
+                }).then((response)=>{
+                    if(response.data.deletedCount!==1){
+                       alert("There is something went wrong!")
+                    }else{
+                        getCollectedData();
+                        alert("deleted successfully!")
+                    }
+                })
+           }
+            getCollectedData();
+            var locationWeatherInformationList=document.getElementById('locationWeatherInformationList')
+            function getWeatherInfo(thisCity){
+                let locationInfo={}
+                locationInfo.cityName=thisCity
+               axios.post('/weatherInfo',{
+                locationInfo
+               }).then((response)=>{
+                 locationWeatherInformationList.innerHTML=`
+                 <strong>City:`+response.data.name+`</strong>
+                 <hr>
+                    <div>
+                        <strong>Coordinates</strong>
+                        <p>Latitude:`+response.data.coord.lat+`</p>
+                        <p>Longitude:`+response.data.coord.lon+`</p>
+                    <div>
+                    <div>
+                        <strong>Weather</strong>
+                        <p>Main:`+response.data.weather[0].main+`</p>
+                        <p>Description:`+response.data.weather[0].description+`</p>
+                    </div>
+                    <div>
+                        <strong>Main</strong>
+                        <p>temp:`+response.data.main.temp+`</p>
+                        <p>feels_like:`+response.data.main.feels_like+`</p>
+                        <p>temp_min:`+response.data.main.temp_min+`</p>
+
+                        <p>temp_max:`+response.data.main.temp_max+`</p>
+                        <p>pressure:`+response.data.main.pressure+`</p>
+                        <p>humidity:`+response.data.main.humidity+`</p>
+
+                        <p>sea_level:`+response.data.main.sea_level+`</p>
+                        <p>grnd_level:`+response.data.main.grnd_level+`</p>
+                    </div>
+                    <div>
+                            <strong>Wind</strong>
+                        <p>Main:`+response.data.wind.speed+`</p>
+                        <p>degree:`+response.data.wind.deg+`</p>
+                    </div>
+                 `
+                 locationWeatherInformationList.style.display='block'
+               })
+            }
+            getWeatherInfo();
+        </script>
+    </body>
+</html>
