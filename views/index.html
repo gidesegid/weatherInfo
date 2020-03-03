@@ -24,9 +24,39 @@
                 <div id="locationWeatherInformationList">
                 </div>
             </div>
+          <div >
+              <!-- <ul id="category">
+                  <li id="laptop">laptop</li>
+                  <li id="camera">Camera</li>
+                  <li id="shoes">Shoes</li>
+
+              </ul> -->
+
+          </div>
+
+
         </div>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script>
+            // document.getElementById('category')
+            // .addEventListener('click',(e)=>{
+            //     console.log(e.target.tagName)
+            //     e.target.classList.add("mystyle");
+            //     console.log(e.target)
+            //     // window.location.href='/'+e.target.id //navigation to category page
+            //     e.target.style.color=''
+            //     e.target.style.color='red'
+            // })
+            // let data={
+            //     name:'gide',
+            //     age:35
+            // }
+            // function test1(name,age){
+            //     this.name=name;
+            //     this.age=age;
+            // }
+            // console.log("test1")
+            // console.log(test1.call(this,"gide",32))
             var collection=document.getElementById('collection')
             var updateLocationName=document.getElementById('updateLocationName')
             updateLocationName.style.display='none'
@@ -138,7 +168,7 @@
                         <p>grnd_level:`+response.data.main.grnd_level+`</p>
                     </div>
                     <div>
-                            <strong>Wind</strong>
+                        <strong>Wind</strong>
                         <p>Main:`+response.data.wind.speed+`</p>
                         <p>degree:`+response.data.wind.deg+`</p>
                     </div>
@@ -147,6 +177,63 @@
                })
             }
             getWeatherInfo();
+            function User(email,name){
+                  this.email=email;
+                  this.name=name;
+                  this.online=false;
+            }
+            User.prototype.login=function(){
+                this.online=true;
+                console.log(this.email,'has loged in')
+            }
+            User.prototype.logout=function(){
+                this.online=false;
+                console.log(this.email,'has loged out')
+            }
+            // var admin=
+            var userOne=new User("gide@gmail.com","gide")
+            var userTwo=new User("gide2@gmail","gide2")
+            console.log("userOne")
+            console.log(userOne)
+            userTwo.login();
+
+            //sum of (a)(b)(c)(d)
+            let sum=function(a){
+                return function(b){
+                    return function(c){
+                        return function(d){
+                            return console.log(a+b+c+d) 
+                        }
+                    }
+                }
+            }
+            sum(1)(2)(3)(4)
+            //apply,call,bind
+            let name={
+                firstName:'gide',
+                lastName:'Segid',
+            }
+            let name2={
+                firstName:'gide2',
+                lastName:'Segid3',
+            }
+            // call
+                // let fullName=function(livesIn){
+                //     console.log(this.firstName+" "+this.lastName +" lives in "+livesIn)
+                // }
+                // fullName.call(name2,"Eritrea")
+            //apply
+                // let fullName=function(livesIn,age){
+                //     console.log(this.firstName+" "+this.lastName +" lives in "+livesIn+" age "+age)
+                // }
+                // fullName.apply(name2,["Eritrea",35])
+//bind
+                let fullName=function(livesIn){
+                    console.log(this.firstName+" "+this.lastName +" lives in "+livesIn)
+                }
+               let mybind= fullName.bind(name2,"Eritrea")
+               mybind()
+
         </script>
     </body>
 </html>

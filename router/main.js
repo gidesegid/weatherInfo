@@ -5,7 +5,11 @@ const axios = require('axios')
 require('dotenv/config');
 router.get('/getCollections',function(req,res){
     Locations.find({},(error,result)=>{
-       res.json(result)
+        if(!!error){
+           console.log(error)
+        }else{
+            res.json(result)
+        }
     })
 })
 router.post('/addLocationToDb',async(req,res)=>{
